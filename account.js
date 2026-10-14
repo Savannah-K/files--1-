@@ -1,6 +1,6 @@
 /* =====================================================================
    ACCOUNT: sign up / log in, cloud save, 168-hour free trial, paywall.   (setup steps: SETUP.md)
-   - Needs the Supabase keys in config.js. Without them Questiva stays in local mode and this file does almost nothing.
+   - Needs the Supabase keys in config.js. Without them Aquestoria stays in local mode and this file does almost nothing.
    - The trial and the payment flag live in the DATABASE (backend/setup.sql). This file only reads them and shows screens.
      Even if someone edits this file, the database refuses to save data once the trial is over and nothing is paid.
    - Your planner data is the same `state` object used everywhere else, saved as one JSON row per user.
@@ -150,9 +150,9 @@ const Account = (() => {
     btn.classList.toggle("warn", !profile.paid && left < 864e5);
     $("acct-email").textContent = user.email;
     $("acct-status").textContent = profile.paid
-      ? "Unlocked forever. Thank you for supporting Questiva! 👑"
+      ? "Unlocked forever. Thank you for supporting Aquestoria! 👑"
       : hasAccess()
-        ? `Free trial: ${fmtLeft(left)} of use left (168 hours total). Only time you're actively using Questiva counts. Free hours also expire on ${new Date(profile.trial_ends_at).toLocaleDateString()}. After that, a one-time ${price} unlocks it forever.`
+        ? `Free trial: ${fmtLeft(left)} of use left (168 hours total). Only time you're actively using Aquestoria counts. Free hours also expire on ${new Date(profile.trial_ends_at).toLocaleDateString()}. After that, a one-time ${price} unlocks it forever.`
         : `Your free hours are used up. Unlock forever for a one-time ${price}.`;
     $("acct-upgrade").hidden = !!profile.paid;
     const showBanner = !profile.paid && hasAccess() && left < 24 * 36e5; // last 24 hours of use
@@ -416,7 +416,7 @@ const Account = (() => {
       if ((profile && profile.paid) || n > 60) {
         clearInterval(poll);
         if (profile && profile.paid)
-          toast("🎉 Questiva is unlocked forever. Thank you!");
+          toast("🎉 Aquestoria is unlocked forever. Thank you!");
       }
     }, 5000);
   }
@@ -425,7 +425,7 @@ const Account = (() => {
     a.href = URL.createObjectURL(
       new Blob([JSON.stringify(state, null, 2)], { type: "application/json" }),
     );
-    a.download = "questiva-data.json";
+    a.download = "aquestoria-data.json";
     a.click();
     URL.revokeObjectURL(a.href);
   }

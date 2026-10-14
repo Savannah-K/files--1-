@@ -1,3 +1,5 @@
+// @ts-nocheck  <- hides the red squiggles in VS Code. They are false alarms: this file is written for Supabase's
+//                 server (which uses "Deno"), not for your computer or your website, so your editor can't understand it.
 // ===== Supabase Edge Function: marks an account as paid when Stripe says the payment succeeded. =====
 // Copy this file to  supabase/functions/stripe-webhook/index.ts  and deploy it (see SETUP.md).
 import Stripe from "https://esm.sh/stripe@14?target=denonext";

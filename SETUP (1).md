@@ -1,6 +1,6 @@
 # Turning on accounts, cloud save and the $6.99 unlock
 
-Questiva works right now in **local mode** (no login, data stays in the browser). To switch on accounts + payments you need two free services. Do everything in **test mode first**.
+Aquestoria works right now in **local mode** (no login, data stays in the browser). To switch on accounts + payments you need two free services. Do everything in **test mode first**.
 
 ## 1. Supabase (accounts + saved data)
 
@@ -14,12 +14,13 @@ Questiva works right now in **local mode** (no login, data stays in the browser)
 
 1. Create a Stripe account → **Products →** add a product, price **$6.99, one-time**.
 2. **Payment Links → New →** pick that product → copy the link into `stripePaymentLink` in `config.js`.
-3. Deploy the webhook (needs the free Supabase CLI):
-   ```
-   supabase functions new stripe-webhook        # then replace its index.ts with backend/stripe-webhook.ts
-   supabase functions deploy stripe-webhook --no-verify-jwt
-   supabase secrets set STRIPE_SECRET_KEY=sk_test_... STRIPE_WEBHOOK_SECRET=whsec_...
-   ```
+3. Deploy the webhook. **Easiest way, no installs (in your browser):**
+   - Supabase dashboard → **Edge Functions → Deploy a new function → Via Editor**. Name it `stripe-webhook`.
+   - Delete the sample code and paste in everything from `backend/stripe-webhook.ts`. Click **Deploy**.
+   - Open the function's settings and turn **off** "Enforce JWT verification" (Stripe isn't a logged-in user).
+   - **Edge Functions → Secrets**: add `STRIPE_SECRET_KEY` (starts `sk_test_`) and `STRIPE_WEBHOOK_SECRET` (you get this in the next step).
+   - (Advanced alternative with the Supabase CLI: `supabase functions deploy stripe-webhook --no-verify-jwt`.)
+     Red squiggles about `Deno` or `https://esm.sh/...` when you open the file in VS Code are normal. Ignore them.
 4. Stripe **Developers → Webhooks → Add endpoint:** URL = `https://<your-project>.supabase.co/functions/v1/stripe-webhook`, events `checkout.session.completed` and `checkout.session.async_payment_succeeded`. Copy its signing secret into the `STRIPE_WEBHOOK_SECRET` secret above.
 5. Test with Stripe's test card `4242 4242 4242 4242`. After paying, the paywall should disappear within seconds.
 
@@ -35,7 +36,7 @@ Any static host with **https** (Netlify, GitHub Pages, Cloudflare Pages). Notifi
 
 ## How the 168 hours of use are counted
 
-- While someone is **actually using** Questiva (tab visible and a mouse/keyboard/touch in the last 2 minutes), the app pings the database about once a minute (`record_usage`). Idle or hidden tabs send nothing, so they cost nothing.
+- While someone is **actually using** Aquestoria (tab visible and a mouse/keyboard/touch in the last 2 minutes), the app pings the database about once a minute (`record_usage`). Idle or hidden tabs send nothing, so they cost nothing.
 - The **server** decides how much to credit: never more than the real time since the last ping (max 70 seconds per ping). Pinging faster doesn't speed anything up, and the first ping after starting or resuming credits nothing.
 - The allowance (`trial_seconds`, 168 h = 604800) and the usage counter live in the database. The browser can read them but cannot change them, and the database rejects saving data once the allowance is used up and nothing is paid.
 - **Backstop:** free hours also expire 180 days after sign-up (`trial_ends_at` in `backend/setup.sql`), so nobody can stretch the trial forever. Change or remove that interval if you disagree. The app tells users the date.
@@ -43,4 +44,4 @@ Any static host with **https** (Netlify, GitHub Pages, Cloudflare Pages). Notifi
 
 ## Reminders
 
-Reminders use browser notifications and appear while Questiva is open (in a tab, window or installed app). Reminders when the browser is closed (push or email) need a server job: a possible next step.
+Reminders use browser notifications and appear while Aquestoria is open (in a tab, window or installed app). Reminders when the browser is closed (push or email) need a server job: a possible next step.

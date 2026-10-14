@@ -1,4 +1,4 @@
--- ===== Questiva database setup. Paste this whole file into Supabase → SQL Editor → Run. =====
+-- ===== Aquestoria database setup. Paste this whole file into Supabase → SQL Editor → Run. =====
 -- The 168-hour trial and the "paid" flag live HERE, so users cannot change them from the browser.
 
 create table if not exists public.profiles (
@@ -38,7 +38,7 @@ language sql stable security definer set search_path = public as $$
                  where p.id = auth.uid() and (p.paid or (p.used_seconds < p.trial_seconds and p.trial_ends_at > now())));
 $$;
 
--- Usage meter: the app calls this about once a minute while someone is actually using Questiva (tab visible + recent activity).
+-- Usage meter: the app calls this about once a minute while someone is actually using Aquestoria (tab visible + recent activity).
 -- The server decides how much time to credit: never more than the real time since the last call, and at most 70 seconds per call.
 -- fresh = true means "I just started/resumed using it", which credits nothing (so idle gaps are never counted).
 create or replace function public.record_usage(fresh boolean default false)
